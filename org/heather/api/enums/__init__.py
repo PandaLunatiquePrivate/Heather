@@ -1,3 +1,6 @@
+import enum
+
+
 @enum.unique
 class VideoEncodingFormat(enum.Enum):
 
@@ -64,8 +67,8 @@ class ImageEncodingFormat(enum.Enum):
     PNG = 4
 
 
-@enum.Enum
-class CaptionsEncodingFormat(enum.Enum):
+@enum.unique
+class CaptionEncodingFormat(enum.Enum):
 
     WEBVTT = 1
     CEA_608 = 2
@@ -76,3 +79,42 @@ class CaptionsEncodingFormat(enum.Enum):
     SRT = 7
     TTML = 8
     GPP3 = 9
+
+
+@enum.unique
+class FileType(enum.Enum):
+
+    IMAGE = 1
+    VIDEO = 2
+    AUDIO = 3
+
+
+class FileExtensions():
+
+    IMAGE = ['png', 'jpg', 'jpeg']
+    VIDEO = ['mp4', 'webm']
+    AUDIO = ['mp3', 'wav', 'ogg']
+
+
+    @staticmethod
+    def is_supported(file):
+
+        for vf in FileExtensions.IMAGE:
+            
+            if file.endswith(vf):
+
+                return FileType.IMAGE
+
+        for vf in FileExtensions.VIDEO:
+            
+            if file.endswith(vf):
+
+                return FileType.VIDEO
+
+        for vf in FileExtensions.AUDIO:
+            
+            if file.endswith(vf):
+
+                return FileType.AUDIO
+
+        return None
