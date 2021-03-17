@@ -92,16 +92,11 @@ class FileDiscoverer():
                     FileDiscoverer.REGISTRY.append(abs_path)
 
                     data = {
-                            'file_name': file, 
-                            'type': file_type, 
-                            'relative_path': relative_path, 
-                            'absolute_path': abs_path
+                        'file_name': file, 
+                        'type': file_type, 
+                        'relative_path': relative_path, 
+                        'absolute_path': abs_path
                     }
                     result.append(data)
 
         return result
-
-
-
-
-discoverer = FileDiscoverer(directories=[])
