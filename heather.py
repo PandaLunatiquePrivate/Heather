@@ -3,6 +3,7 @@ import pathlib
 import argparse
 
 from org.heather.setup import Setup
+from org.heather.api.log import Log, LogLevel
 
 
 # Argument Prser
@@ -19,7 +20,7 @@ args = parser.parse_args()
 
 # Startup process
 is_setup = Setup.is_config_valid(os.path.dirname(__file__))
-print(args.debug)
+Log.do(LogLevel.WARN, "test")
 
 # Start main setup wizard
 if not is_setup:

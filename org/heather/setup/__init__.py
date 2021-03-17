@@ -1,7 +1,8 @@
 import enum
 import json
 import os
-
+import requests
+import yaml
 
 @enum.unique
 class VerifyResult(enum.Enum):
@@ -46,4 +47,7 @@ class Setup():
     @staticmethod
     def wizard():
 
-        print('starting wizard')
+        data = requests.get('https://pastebin.com/raw/48kzz6Y9')
+
+        languages = yaml.load(data.text, Loader=yaml.CLoader)
+        print(languages)
