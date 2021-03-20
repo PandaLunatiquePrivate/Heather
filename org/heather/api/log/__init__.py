@@ -51,6 +51,7 @@ class LogLevel(enum.Enum):
 	GOOD = 7
 	TRACE = 8
 	CLOSE = 9
+	COMMON = 10
 
 
 """
@@ -130,6 +131,11 @@ class Log():
 
 			level = Fore.WHITE + '[' + "\u001b[31;1m" + "-" + Fore.WHITE + ']' + Fore.RESET
 			levelUncoloured = '[-]'
+
+		elif loglevel.value == 10:
+
+			level = Fore.RESET + ''
+			levelUncoloured = ''
 		
 		else:
 

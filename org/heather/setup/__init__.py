@@ -3,6 +3,10 @@ import json
 import os
 import requests
 import yaml
+import sqlite3
+
+from org.heather.api.log import Log, LogLevel
+
 
 @enum.unique
 class VerifyResult(enum.Enum):
@@ -15,7 +19,7 @@ class VerifyResult(enum.Enum):
 class Setup():
 
     @staticmethod
-    def verify(installation_path):
+    def verify(installationPath):
         print('')
 
     @staticmethod
@@ -45,9 +49,81 @@ class Setup():
 
 
     @staticmethod
-    def wizard():
+    def wizard(rootPath):
+
+        Log.do(LogLevel.ALL, 'Launching Heather setup wizard...', up_spacing=1, bottom_spacing=1)
+
+        Log.do(LogLevel.INFO, f'Please specify an valid installation path:\nCurrently in {rootPath}', up_spacing=1, bottom_spacing=1)
+
+        while True:
+
+            setupParentPath = os.path.normpath(rootPath + '\\' + input('Installation path: '))
+            
+            if len(setupParentPath) > 0 and os.path.isdir(setupParentPath):
+                setupParentPath = os.path.abspath(setupParentPath)
+                if os.access(setupParentPath, os.W_OK):
+                    break
+                else:
+                    Log.do(LogLevel.ERROR, 'Permission denied! Can access to the specified directory! (Writting or reading)', up_spacing=1)
+            else:
+                Log.do(LogLevel.ERROR, 'Invalid directory!', up_spacing=1)
+            
+            Log.do(LogLevel.INFO, 'Please specify an valid installation path:')
+
+        Log.do(LogLevel.INFO, 'Downloading locales files...', up_spacing=1)
 
         data = requests.get('https://pastebin.com/raw/48kzz6Y9')
+        locales = yaml.load(data.text, Loader=yaml.CLoader)
+        
+        Log.do(LogLevel.GOOD, f'Found {len(locales)} locales availables!')
 
-        languages = yaml.load(data.text, Loader=yaml.CLoader)
-        print(languages)
+        Log.do(LogLevel.INFO, f'Select a default language:', up_spacing=1)
+
+        while True:
+
+            for locale in locales:
+
+                Log.do(LogLevel.ALL, f'- {locale}')
+
+            setupLocale = input('Locale language: ')
+
+            if len(setupLocale) > 0 and locales.get(setupLocale) != None:
+                break
+            else:
+
+                Log.do(LogLevel.ERROR, 'Invalid locale!', up_spacing=1)
+
+            Log.do(LogLevel.INFO, f'Select a default language:')
+
+        Log.do(LogLevel.INFO, f'Start automatic setup...', up_spacing=1)
+
+        directories = [
+            os.path.normpath(setupParentPath + "/avatars"), 
+            os.path.normpath(setupParentPath + "/databases"),
+            os.path.normpath(setupParentPath + "/locales"),
+            os.path.normpath(setupParentPath + "/logs")
+        ]
+
+        for directory in directories:
+
+            Log.do(LogLevel.ALL, f'Creating directory {directory}', delay=0.1)
+            #os.mkdir(directory)
+
+        Log.do(LogLevel.ALL, f'Setting up database...', delay=0.1)
+        database = sqlite3.connect(os.path.normpath(setupParentPath + "/databases/database.db"))
+
+        Log.do(LogLevel.ALL, f'Creating tables...', delay=0.1)
+        
+        queries = [
+            'CREATE TABLE profiles (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(16) NOT NULL UNIQUE, NAME VARCHAR(32) NOT NULL UNIQUE DEFAULT "New profile", PIN VARCHAR(4) NOT NULL DEFAULT "0000");',
+            'CREATE TABLE movies (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(16) NOT NULL UNIQUE, NAME VARCHAR(32) NOT NULL UNIQUE DEFAULT "New profile", PIN VARCHAR(4) NOT NULL DEFAULT "0000");'
+        ]
+
+        for query in queries:
+            database.execute(query)
+
+        database.commit()
+
+        
+
+            
