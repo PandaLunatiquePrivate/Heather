@@ -101,7 +101,7 @@ class Setup():
         # Setup: Directories
         directories = [
             os.path.normpath(setupParentPath + "/avatars"), 
-            os.path.normpath(setupParentPath + "/databases"),
+            os.path.normpath(setupParentPath + "/database"),
             os.path.normpath(setupParentPath + "/locales"),
             os.path.normpath(setupParentPath + "/logs")
         ]
@@ -116,7 +116,7 @@ class Setup():
         
         # Setup: Database
         Log.do(LogLevel.ALL, f'Setting up database...', delay=0.1)
-        database = sqlite3.connect(os.path.normpath(setupParentPath + "/databases/database.db"))
+        database = sqlite3.connect(os.path.normpath(setupParentPath + "/database/database.db"))
 
         Log.do(LogLevel.ALL, f'Creating tables...', delay=0.1)
         
@@ -155,8 +155,54 @@ class Setup():
 
                 Log.do(LogLevel.WARN, f'Can\'t download {locale}.lang!', delay=0.05)
 
+        # Setup: Download avatars
+        Log.do(LogLevel.ALL, f'Downloading avatars...', delay=0.1)
+        Log.do(LogLevel.ALL, f'Gettings avatars list...', delay=0.1)
+
+        data = requests.get('https://pastebin.com/raw/A3PX5iAP')
+        avatars = yaml.load(data.text, Loader=yaml.CLoader)
+
+        for avatar in avatars:
+
+            Log.do(LogLevel.ALL, f'Downloading {avatar} file...', delay=0.1)
+
+            try:
+            
+                data = requests.get(avatars[avatar]).content
+                with open(os.path.normpath(setupParentPath + f"/avatars/{avatar}"), 'wb+') as f:
+
+                    f.write(data)
+
+                Log.do(LogLevel.GOOD, f'Downloaded {avatar}!', delay=0.05)
+
+            except:
+
+                Log.do(LogLevel.WARN, f'Can\'t download {avatar}!', delay=0.05)
+
+        config = {
+	        "general": {
+                "parent_path": setupParentPath,
+		        "paths": {
+				    "avatars": "avatars",
+				    "database": "database",
+				    "locales": "locales",
+				    "logs": "logs"
+                },
+                "locale": setupLocale,
+                "updater": {
+                    "enable": True,
+                    "interval": 3600
+                },
+                "plugins": {
+                    "enable": True
+                }
+            }
+        }
+
+        with open(os.path.normpath(rootPath + "/heather.conf"), 'w+') as f:
+
+            json.dump(config, f, indent=4)
 
 
         
 
-            
