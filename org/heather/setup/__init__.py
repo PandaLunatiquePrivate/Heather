@@ -4,6 +4,7 @@ import os
 import requests
 import yaml
 import sqlite3
+import traceback
 
 from org.heather.api.log import Log, LogLevel
 
@@ -96,7 +97,8 @@ class Setup():
             Log.do(LogLevel.INFO, f'Select a default language:')
 
         Log.do(LogLevel.INFO, f'Start automatic setup...', up_spacing=1)
-
+        
+        # Setup: Directories
         directories = [
             os.path.normpath(setupParentPath + "/avatars"), 
             os.path.normpath(setupParentPath + "/databases"),
@@ -107,22 +109,53 @@ class Setup():
         for directory in directories:
 
             Log.do(LogLevel.ALL, f'Creating directory {directory}', delay=0.1)
-            #os.mkdir(directory)
-
+            try:
+                os.mkdir(directory)
+            except:
+                pass
+        
+        # Setup: Database
         Log.do(LogLevel.ALL, f'Setting up database...', delay=0.1)
         database = sqlite3.connect(os.path.normpath(setupParentPath + "/databases/database.db"))
 
         Log.do(LogLevel.ALL, f'Creating tables...', delay=0.1)
         
         queries = [
-            'CREATE TABLE profiles (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(16) NOT NULL UNIQUE, NAME VARCHAR(32) NOT NULL UNIQUE DEFAULT "New profile", PIN VARCHAR(4) NOT NULL DEFAULT "0000");',
-            'CREATE TABLE movies (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(16) NOT NULL UNIQUE, NAME VARCHAR(32) NOT NULL UNIQUE DEFAULT "New profile", PIN VARCHAR(4) NOT NULL DEFAULT "0000");'
+            'CREATE TABLE profiles (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(16) NOT NULL UNIQUE, NAME VARCHAR(32) NOT NULL UNIQUE DEFAULT "New profile", PIN VARCHAR(4) NOT NULL DEFAULT "0000")',
+            'CREATE TABLE movies (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(16) NOT NULL UNIQUE, TITLE VARCHAR(64) NOT NULL DEFAULT "Unknown", TRAILER_LINK VARCHAR(256), RELEASE_DATE VARCHAR(64), GENRE TEXT, DURATION INTEGER, REAL_DURATION INTEGER, RATING REAL, POPULAR_QUOTE TEXT, SYNOPSIS TEXT, COUNTRY VARCHAR(128), PRODUCTION TEXT, DIRECTOR TEXT, CASTS TEXT, ORIGINAL_VERSION VARCHAR(16) NOT NULL, FILE_PATH VARCHAR(256), QUALITY VARCHAR(32))',
+            'CREATE TABLE series (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(16) NOT NULL UNIQUE, TITLE VARCHAR(64) NOT NULL DEFAULT "Unknown", EPISODES INTEGER, EPISODE_NAME VARCHAR(32) DEFAULT "EPISODE", SEASONS INTEGER, SEASON_NAME VARCHAR(32) DEFAULT "SEASON", TRAILERS_LINK VARCHAR(256), RELEASES_DATE VARCHAR(64), GENRE TEXT, TOTAL_DURATION INTEGER, RATING REAL, POPULAR_QUOTE TEXT, SYNOPSIS TEXT, COUNTRY VARCHAR(128), PRODUCTION TEXT, DIRECTOR TEXT, CASTS TEXT,  ORIGINAL_VERSION VARCHAR(16) NOT NULL)',
+            'CREATE TABLE seasons (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(16) NOT NULL UNIQUE, SERIE_UID VARCHAR(16) NOT NULL, SEASON INTEGER, SEASON_TITLE VARCHAR(64) NOT NULL DEFAULT "Unknown", RELEASES_DATE VARCHAR(64), TOTAL_DURATION INTEGER, POPULAR_QUOTE TEXT, SYNOPSIS TEXT, PRODUCTION TEXT, DIRECTOR TEXT, CASTS TEXT, ORIGINAL_VERSION VARCHAR(16) NOT NULL)',
+            'CREATE TABLE episodes (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(16) NOT NULL UNIQUE, SEASON_UID VARCHAR(16) NOT NULL, EPISODE INTEGER, EPISODE_TITLE VARCHAR(64) NOT NULL DEFAULT "Unknown", RELEASES_DATE VARCHAR(64), DURATION INTEGER, SYNOPSIS TEXT, CASTS TEXT, FILE_PATH VARCHAR(256), QUALITY VARCHAR(32))'
         ]
 
         for query in queries:
             database.execute(query)
+            Log.do(LogLevel.ALL, 'Creating a table...')
+            Log.do(LogLevel.COMMON, f'> {query}', delay=0.1)
 
         database.commit()
+
+        # Setup: Download locales
+        Log.do(LogLevel.ALL, f'Downloading locales...', delay=0.1)
+
+        for locale in locales:
+
+            Log.do(LogLevel.ALL, f'Downloading {locale}.lang file...', delay=0.1)
+
+            try:
+            
+                data = requests.get(locales[locale]).content
+                with open(os.path.normpath(setupParentPath + f"/locales/{locale}.lang"), 'wb+') as f:
+
+                    f.write(data)
+
+                Log.do(LogLevel.GOOD, f'Downloaded {locale}.lang!', delay=0.05)
+
+            except:
+
+                Log.do(LogLevel.WARN, f'Can\'t download {locale}.lang!', delay=0.05)
+
+
 
         
 
