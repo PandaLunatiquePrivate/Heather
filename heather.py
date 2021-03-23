@@ -1,6 +1,11 @@
 import os
+import sys
+import flask
 import pathlib
+import logging
 import argparse
+
+from flask_cors import CORS
 
 from org.heather.setup import Setup
 from org.heather.api.log import Log, LogLevel
@@ -27,8 +32,26 @@ is_setup = Setup.is_config_valid(os.path.dirname(__file__))
 if not is_setup or args.setup:
 
     Setup.wizard(os.path.dirname(__file__))
+    sys.exit(-1)
 
 # Process to main integrity verification
 else:
 
     print('dat')
+
+
+endpoint = flask.Flask(__name__)
+CORS(endpoint)
+endpoint.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
+@endpoint.route('/')
+def main():
+
+    return 'r'
+
+
+
+endpoint.run(host='0.0.0.0', port=8080)

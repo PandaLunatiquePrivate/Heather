@@ -1,0 +1,24 @@
+
+* {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+.classic:root {
+    --quite-white: #F2F2F2;
+    --silver-medal: #AFAFAF;
+    --a-bit-more-silver: #727375;
+    --famous-grey-dark: #36393F;
+    --same-but-darker: #2A2C30;
+    --darker-again: #202024;
+    --purple-blue: #492991;
+    --sky-blue-like-the-sky: #78A4FA;
+    --purple-but-more-pink: #B05CD6;
+    --enchanted-pink: #D870E8;
+    --pinky-boi: #FF8AF9;
+
+    --shadow: #080808;
+}

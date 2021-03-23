@@ -1,0 +1,158 @@
+html {
+
+    width: 100%;
+    height: 100%;
+
+}
+
+body {
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--darker-again);
+
+}
+
+#topbar {
+
+    width: 100%;
+    height: 60px;
+
+}
+
+#profile-selector {
+
+
+    width: 80%;
+    height: 60%;
+
+    display: flex;
+    flex-direction: column;
+
+    margin: auto;
+
+}
+
+#selector-title {
+
+    width: 100%;
+    height: 10%;
+
+    display: flex;
+
+    margin: auto auto 15px auto;
+
+}
+
+#selector-title > h1 {
+
+    margin: auto;
+
+    font: 3.8em Helvetica;
+
+    color: var(--quite-white);
+
+}
+
+#profiles {
+
+    width: 80%;
+
+    display: flex;
+    flex-direction: row;
+
+    margin: 15px auto auto auto;
+
+    justify-content: left;
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+}
+
+.profile, #add-profile {
+
+    width: 220px;
+    height: 220px;
+
+    display: flex;
+    flex-direction: column;
+
+    margin: 15px auto 15px auto;
+
+    cursor: pointer;
+
+}
+
+#add-cross {
+
+    width: 170px;
+    height: 170px;
+
+    margin: auto;
+
+    display: flex;
+
+    border-radius: 90px;
+
+    background-color: var(--famous-grey-dark);
+    box-shadow: 0px 0px 10px 6px var(--shadow);
+
+    transition-duration: 0.15s;
+
+}
+
+#add-cross > svg {
+
+    width: 50px;
+    height: 50px;
+
+    margin: auto;
+
+}
+
+
+
+.profile > img {
+
+    width: 170px;
+    height: 170px;
+
+    margin: auto;
+
+    border-radius: 90px;
+
+    box-shadow: 0px 0px 10px 6px var(--shadow);
+
+    transition-duration: 0.15s;
+
+}
+
+.profile:hover > img {
+
+    box-shadow: 0px 0px 10px 8px var(--shadow);
+
+}
+
+.profile > span, #add-profile > span {
+
+    margin: auto;
+
+    color: var(--silver-medal);
+
+    font: 1.3em Helvetica;
+
+    transition-duration: 0.15s;
+
+
+}
+
+.profile:hover > span, #add-profile:hover > span {
+
+    color: var(--quite-white);
+    text-shadow: 0px 0px 8px white;
+
+}
