@@ -6,7 +6,7 @@ from org.heather.setup import Setup
 from org.heather.api.log import Log, LogLevel
 
 
-# Argument Prser
+# Argument Parser
 parser = argparse.ArgumentParser()
 parser.add_argument('-setup', help='Start the JHeather setup wizard.', action="store_true")
 parser.add_argument('-fullreset', help='To do', action="store_true")
