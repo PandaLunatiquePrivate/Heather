@@ -45,6 +45,16 @@ class TheMovieDatabase:
         return requests.get(TheMovieDatabase.ENDPOINT + req, headers=headers)
 
     @staticmethod
+    def image_request(url, size="original"):
+
+        headers = {
+            'Authorization': f'Bearer {TheMovieDatabase.API_TOKEN}',
+            'Content-Type': 'application/json;charset=utf-8'
+        }
+
+        return requests.get(TheMovieDatabase.IMAGES["endpoint"]["base_url"] + size + url, headers=headers)
+
+    @staticmethod
     def search_movie(query, language=None, include_adult=False, region=None, year=None, primary_release_year=None):
 
         req = f"/3/search/movie?query={query}"
@@ -393,6 +403,72 @@ class TheMovieDatabase:
             raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
 
     @staticmethod
+    def get_images(movie_id):
+
+        req = f"/3/movie/{movie_id}/images"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+    @staticmethod
+    def get_tv_images(tv_id):
+
+        req = f"/3/tv/{tv_id}/images"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+    @staticmethod
+    def get_first_image(response, language="fr"):
+
+        url = ""
+
+        for pictures in response["posters"]:
+            if pictures["iso_639_1"] == language:
+                url = pictures["file_path"]
+                break
+
+        filename = url.replace("/", "")
+        response = TheMovieDatabase.image_request(url)
+
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+
+        print('Image successfully Downloaded: ', filename)
+
+    @staticmethod
+    def get_first_poster(response, language="en"):
+
+        url = ""
+
+        for pictures in response["posters"]:
+            if pictures["iso_639_1"] == language:
+                url = pictures["file_path"]
+                break
+
+        filename = url.replace("/", "")
+        response = TheMovieDatabase.image_request(url)
+
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+
+        print('Image successfully Downloaded: ', filename)
+
+    @staticmethod
     def get_person_details(person_id):
 
         req = f"/3/person/{person_id}"
@@ -580,7 +656,7 @@ TheMovieDatabase.configure('eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOTAzYzhiZTE4ZDE5YjF
 # print(TheMovieDatabase.get_reviews(1726))
 # print(TheMovieDatabase.get_translations(1726))
 # print(TheMovieDatabase.get_additional_videos(1726))
-# print(TheMovieDatabase.get_belonging_lists(1726))
+# print(TheMovieDatabase.get_belonging_lists(1726))#
 # print(TheMovieDatabase.get_person_details(10990))
 # print(TheMovieDatabase.get_review_details("59cc634fc3a3682aa30065a3"))
 # print(TheMovieDatabase.search_company("Columbia Pictures"))
@@ -596,6 +672,13 @@ TheMovieDatabase.configure('eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOTAzYzhiZTE4ZDE5YjF
 # print(TheMovieDatabase.get_similar_tv_shows(87108))
 # print(TheMovieDatabase.get_tv_translations(87108))
 # print(TheMovieDatabase.get_additional_tv_videos(87108))
+
+# returned = TheMovieDatabase.get_images(1726)
+# TheMovieDatabase.get_first_poster(returned)
+# TheMovieDatabase.get_first_image(returned)
+# print(TheMovieDatabase.get_first_image(1726))
+# returned = TheMovieDatabase.get_tv_images(87108)
+# TheMovieDatabase.get_first_image(returned)
 
 # Todo : Add additional parameters
 # Todo : Split class between TheMovieDatabaseMovies and TheMovieDatabaseTV ?
