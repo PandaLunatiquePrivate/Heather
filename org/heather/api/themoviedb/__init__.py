@@ -103,7 +103,7 @@ class TheMovieDatabase:
             raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
 
     @staticmethod
-    def search_movie_details(movie_id):
+    def get_movie_details(movie_id):
 
         req = f"/3/movie/{movie_id}"
         response = TheMovieDatabase.r(req)
@@ -273,6 +273,21 @@ class TheMovieDatabase:
             raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
 
     @staticmethod
+    def get_recommended_movies(movie_id):
+
+        req = f"/3/movie/{movie_id}/recommendations"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+    @staticmethod
     def get_similar_movies(movie_id):
 
         req = f"/3/movie/{movie_id}/similar"
@@ -407,12 +422,150 @@ class TheMovieDatabase:
         elif response.status_code == 404:
             raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
 
+    @staticmethod
+    def get_tv_details(tv_id):
 
-TheMovieDatabase.configure('eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOTAzYzhiZTE4ZDE5YjFiNGRjMTAyYzZkYzZkM2QyZCIsInN1YiI6IjYwNTc3MTE2NmUzZGViMDA1NGU4NWZmYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GflopqdlA5QCpdXuAWonQyxBFmWHz_DRUwzd0sKO9qc')
+        req = f"/3/tv/{tv_id}"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+    @staticmethod
+    def get_alternatives_tv_titles(tv_id):
+
+        req = f"/3/tv/{tv_id}/alternative_titles"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+    @staticmethod
+    def get_tv_credits(tv_id):
+
+        req = f"/3/tv/{tv_id}/credits"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+    @staticmethod
+    def get_associated_tv_keywords(tv_id):
+
+        req = f"/3/tv/{tv_id}/keywords"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+    @staticmethod
+    def get_recommended_tv_shows(tv_id):
+
+        req = f"/3/tv/{tv_id}/recommendations"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+    @staticmethod
+    def get_tv_review(tv_id):
+
+        req = f"/3/tv/{tv_id}/reviews"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+    @staticmethod
+    def get_similar_tv_shows(tv_id):
+
+        req = f"/3/tv/{tv_id}/similar"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+    @staticmethod
+    def get_tv_translations(tv_id):
+
+        req = f"/3/tv/{tv_id}/translations"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+    @staticmethod
+    def get_additional_tv_videos(tv_id):
+
+        req = f"/3/tv/{tv_id}/videos"
+        response = TheMovieDatabase.r(req)
+
+        if response.status_code == 200:
+            return response.json()
+
+        elif response.status_code == 401:
+            raise AuthenticationFailed("Authentication failed: You do not have permissions to access the service.")
+
+        elif response.status_code == 404:
+            raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
+
+
+TheMovieDatabase.configure('eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOTAzYzhiZTE4ZDE5YjFiNGRjMTAyYzZkYzZkM2QyZCIsInN1YiI6IjYwNT'
+                           'c3MTE2NmUzZGViMDA1NGU4NWZmYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GflopqdlA5QCpd'
+                           'XuAWonQyxBFmWHz_DRUwzd0sKO9qc')
+
 # print(TheMovieDatabase.IMAGES)
 
 # print(TheMovieDatabase.search_movie("iron man"))
-# print(TheMovieDatabase.search_movie_details(1726))
+# print(TheMovieDatabase.get_movie_details(1726))
 # print(TheMovieDatabase.get_film_genres())
 # print(TheMovieDatabase.get_tv_genres())
 # print(TheMovieDatabase.search_tv_show("Chernobyl"))
@@ -433,5 +586,16 @@ TheMovieDatabase.configure('eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOTAzYzhiZTE4ZDE5YjF
 # print(TheMovieDatabase.search_company("Columbia Pictures"))
 # print(TheMovieDatabase.search_collection("Marvel"))
 # print(TheMovieDatabase.search_keyword("Mission"))
+# print(TheMovieDatabase.get_tv_details(87108))
+# print(TheMovieDatabase.get_alternatives_tv_titles(87108))
+# print(TheMovieDatabase.get_tv_credits(87108))
+# print(TheMovieDatabase.get_associated_tv_keywords(87108))
+# print(TheMovieDatabase.get_recommended_movies(1726))
+# print(TheMovieDatabase.get_recommended_tv_shows(87108))
+# print(TheMovieDatabase.get_tv_review(87108))
+# print(TheMovieDatabase.get_similar_tv_shows(87108))
+# print(TheMovieDatabase.get_tv_translations(87108))
+# print(TheMovieDatabase.get_additional_tv_videos(87108))
 
 # Todo : Add additional parameters
+# Todo : Split class between TheMovieDatabaseMovies and TheMovieDatabaseTV ?
