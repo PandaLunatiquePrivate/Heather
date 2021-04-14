@@ -2,16 +2,9 @@ import uuid
 import random
 import string
 
+from org.heather.api.tools import Tools
+
 class Session():
-
-
-    @staticmethod
-    def gen_session_uid(size):
-
-        _chars = string.ascii_letters + string.digits + "@=-#"
-        _uid = ''.join([random.choice(_chars) for i in range(size)])
-
-        return _uid
 
 
     @staticmethod
@@ -20,12 +13,13 @@ class Session():
         return SessionRegistry
 
 
-    def __init__(self, remote, username):
+    def __init__(self, remote, profile_uid, cache={}):
 
         self._remote = remote.strip()
-        self._username = username
+        self._profileUid = profile_uid
+        self._cache = cache
         self._session_token = str(uuid.uuid4())
-        self._session_key = Session.gen_session_uid(64)
+        self._session_key = Tools.get_uid(64)
 
 
     def get_remote(self):
@@ -35,27 +29,62 @@ class Session():
     
     def set_remote(self, remote):
 
-        return self._remote
+        self._remote = remote
 
 
-    def get_username(self):
+    def get_session_token(self):
 
-        return self._username
+        return self._session_token
+
+
+    def get_session_key(self):
+
+        return self._session_key
+
+
+    def get_profile_uid(self):
+
+        return self._profileUid
 
     
-    def set_username(self, username):
+    def set_profile_uid(self, profile_uid):
 
-        return self._username
+        self._profileUid = profile_uid
+
+
+    def get_cache(self):
+
+        return self._cache
+
+    
+    def update_cache(self, key, value):
+
+        self._cache[key] = value
+
+
+    def clear_cache(self):
+
+        self._cache = {}
+    
 
 
 class SessionRegistry():
 
     SESSIONS = {}
 
-    @staticmethod
-    def add(session):
 
-        SessionRegistry.SESSIONS[session.get_remote()] = session
+    @staticmethod
+    def add(sessions):
+
+        if isinstance(sessions, Session):
+
+            SessionRegistry.SESSIONS[sessions.get_remote()] = sessions
+
+        elif isinstance(sessions, list):
+
+            for s in sessions:
+
+                SessionRegistry.SESSIONS[s.get_remote()] = s
 
 
     @staticmethod
@@ -90,6 +119,12 @@ class SessionRegistry():
 
 
     @staticmethod
-    def find_session_by_username(username):
-        
-        return True
+    def find_session_by_profile_uid(profile_uid):
+
+        for s in SessionRegistry.SESSIONS:
+
+            if SessionRegistry.SESSIONS[s].get_profile_uid() == profile_uid:
+
+                return SessionRegistry.SESSIONS[s]
+
+        return None

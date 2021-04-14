@@ -1,4 +1,3 @@
-
 * {
 
     margin: 0;
@@ -21,4 +20,130 @@
     --pinky-boi: #FF8AF9;
 
     --shadow: #080808;
+}
+
+
+
+@font-face {
+    font-family: 'Poppins Bold';
+    font-display: swap;
+    src: url(../fonts/poppins/bold.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Poppins Extra Bold';
+    font-display: swap;
+    src: url(../fonts/poppins/extrabold.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Poppins Extra Light';
+    font-display: swap;
+    src: url(../fonts/poppins/extralight.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Poppins Light';
+    font-display: swap;
+    src: url(../fonts/poppins/light.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Poppins Medium';
+    font-display: swap;
+    src: url(../fonts/poppins/medium.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Poppins Regular';
+    font-display: swap;
+    src: url(../fonts/poppins/regular.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Poppins Semi Bold';
+    font-display: swap;
+    src: url(../fonts/poppins/semibold.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Poppins Thin';
+    font-display: swap;
+    src: url(../fonts/poppins/thin.ttf) format('truetype');
+}
+
+
+#loading-screen {
+
+    width: 100%;
+    height: 100%;
+
+    position: fixed;
+    top: 0; left: 0;
+
+    display: flex;
+
+    background-color: var(--darker-again);
+
+}
+
+
+#loading-screen > h2 {
+
+
+    margin: auto;
+    cursor: default;
+
+    background: 50% 50% / 50% 50% no-repeat radial-gradient(ellipse at bottom, var(--purple-but-more-pink), transparent, transparent);
+    
+    background-clip: text;
+    -webkit-background-clip: text;
+    
+    color: transparent;
+    
+    animation: loadingReveal 2s ease-in-out forwards -0.1s, loadingGlow 2.5s linear infinite 2s;
+
+    font-size: 4.5em;
+    font-family: 'Poppins Bold';
+
+}
+
+
+#loading-screen > h2::selection {
+
+    display: none;
+}
+
+
+@keyframes loadingReveal {
+
+    80% {
+        letter-spacing: 8px;
+    }
+
+    100% {
+        background-size: 350% 300%;
+        background-position: 50% 75%;
+    }
+
+}
+
+@keyframes loadingGlow {
+
+    40% {
+        text-shadow: 0 0 8px var(--purple-but-more-pink);
+    }
+
+}
+
+@keyframes loadingFadeOut {
+
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+
 }

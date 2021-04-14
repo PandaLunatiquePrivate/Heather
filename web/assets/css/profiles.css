@@ -20,7 +20,7 @@ body {
 #topbar {
 
     width: 100%;
-    height: 60px;
+    height: 80px;
 
 }
 
@@ -28,12 +28,11 @@ body {
 
 
     width: 80%;
-    height: 60%;
 
     display: flex;
     flex-direction: column;
 
-    margin: auto;
+    margin: auto auto auto auto;
 
 }
 
@@ -99,9 +98,15 @@ body {
     border-radius: 90px;
 
     background-color: var(--famous-grey-dark);
-    box-shadow: 0px 0px 10px 6px var(--shadow);
+    box-shadow: 0px 0px 10px 2px var(--shadow);
 
     transition-duration: 0.15s;
+
+}
+
+#add-cross:hover {
+
+    box-shadow: 0px 0px 10px 4px var(--shadow);
 
 }
 
@@ -125,7 +130,7 @@ body {
 
     border-radius: 90px;
 
-    box-shadow: 0px 0px 10px 6px var(--shadow);
+    box-shadow: 0px 0px 10px 4px var(--shadow);
 
     transition-duration: 0.15s;
 
@@ -133,7 +138,7 @@ body {
 
 .profile:hover > img {
 
-    box-shadow: 0px 0px 10px 8px var(--shadow);
+    box-shadow: 0px 0px 10px 6px var(--shadow);
 
 }
 
@@ -153,6 +158,6 @@ body {
 .profile:hover > span, #add-profile:hover > span {
 
     color: var(--quite-white);
-    text-shadow: 0px 0px 8px white;
+    text-shadow: 0px 0px 4px var(--quite-white);
 
 }

@@ -61,6 +61,8 @@ class PeriodicTask(threading.Thread):
         self.period = period
         self.running = True
 
+        self._stop_event = threading.Event()
+
         threading.Thread.__init__(self)
 
 
@@ -82,4 +84,5 @@ class PeriodicTask(threading.Thread):
     def terminate(self):
 
         self.running = False
+        self._stop_event.set()
         sys.exit(-1)

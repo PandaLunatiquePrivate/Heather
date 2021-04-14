@@ -3,6 +3,7 @@ import json
 import os
 import requests
 import yaml
+import socket
 import sqlite3
 import traceback
 
@@ -22,24 +23,22 @@ class Setup():
 
     @staticmethod
     def verify(installationPath):
-        print('')
+        print('#TODO: setup verification')
+        return True
+
 
     @staticmethod
     def is_config_valid(path):
 
         full_path = os.path.abspath(path + "heather.conf" if path.endswith('/') else path + "/heather.conf")
-        print(full_path)
+        
         if os.path.exists(full_path):
 
             with open(full_path, 'r') as f:
 
                 try:
 
-                    temp = json.load(f)
-                    del temp
-
-                    #add field verification
-
+                    _temp = json.load(f)
                     return True
 
                 except:
@@ -59,7 +58,7 @@ class Setup():
 
         while True:
 
-            setupParentPath = os.path.normpath(rootPath + '\\' + input('Installation path: '))
+            setupParentPath = os.path.normpath(input('Installation path: '))
             
             if len(setupParentPath) > 0 and os.path.isdir(setupParentPath):
                 setupParentPath = os.path.abspath(setupParentPath)
@@ -104,7 +103,10 @@ class Setup():
             os.path.normpath(setupParentPath + "/avatars"), 
             os.path.normpath(setupParentPath + "/database"),
             os.path.normpath(setupParentPath + "/locales"),
-            os.path.normpath(setupParentPath + "/logs")
+            os.path.normpath(setupParentPath + "/logs"),
+            os.path.normpath(setupParentPath + "/files"),
+            os.path.normpath(setupParentPath + "/files/movies"),
+            os.path.normpath(setupParentPath + "/files/series")
         ]
 
         for directory in directories:
@@ -127,7 +129,9 @@ class Setup():
             'CREATE TABLE series (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(32) NOT NULL UNIQUE, TITLE VARCHAR(64) NOT NULL DEFAULT "Unknown", EPISODES INTEGER, EPISODE_NAME VARCHAR(32) DEFAULT "EPISODE", SEASONS INTEGER, SEASON_NAME VARCHAR(32) DEFAULT "SEASON", TRAILERS_LINK VARCHAR(256), RELEASES_DATE VARCHAR(64), GENRE TEXT, TOTAL_DURATION INTEGER, RATING REAL, POPULAR_QUOTE TEXT, SYNOPSIS TEXT, COUNTRY VARCHAR(128), PRODUCTION TEXT, DIRECTOR TEXT, CASTS TEXT,  ORIGINAL_VERSION VARCHAR(16) NOT NULL)',
             'CREATE TABLE seasons (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(32) NOT NULL UNIQUE, SERIE_UID VARCHAR(32) NOT NULL, SEASON INTEGER, SEASON_TITLE VARCHAR(64) NOT NULL DEFAULT "Unknown", RELEASES_DATE VARCHAR(64), TOTAL_DURATION INTEGER, POPULAR_QUOTE TEXT, SYNOPSIS TEXT, PRODUCTION TEXT, DIRECTOR TEXT, CASTS TEXT, ORIGINAL_VERSION VARCHAR(16) NOT NULL)',
             'CREATE TABLE episodes (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(32) NOT NULL UNIQUE, SEASON_UID VARCHAR(32) NOT NULL, EPISODE INTEGER, EPISODE_TITLE VARCHAR(64) NOT NULL DEFAULT "Unknown", RELEASES_DATE VARCHAR(64), DURATION INTEGER, SYNOPSIS TEXT, CASTS TEXT, FILE_PATH VARCHAR(256), QUALITY VARCHAR(32))',
-            'CREATE TABLE groups (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(32) NOT NULL UNIQUE, NAME VARCHAR(32) NOT NULL UNIQUE DEFAULT "New group", MANAGE_GROUPS INTEGER, MANAGE_PROFILES INTEGER, AGE_LIMIT VARCHAR(16) NOT NULL, PRIORITY INTEGER NOT NULL)'
+            'CREATE TABLE groups (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(32) NOT NULL UNIQUE, NAME VARCHAR(32) NOT NULL UNIQUE DEFAULT "New group", MANAGE_GROUPS INTEGER, MANAGE_PROFILES INTEGER, IS_KID_FRIENDLY INTEGER, PRIORITY INTEGER NOT NULL)',
+            'CREATE TABLE modules (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(32) NOT NULL UNIQUE, NAME VARCHAR(32) NOT NULL UNIQUE DEFAULT "New module", PATH VARCHAR(256) DEFAULT NULL)',
+            'CREATE TABLE directories (ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, UID VARCHAR(32) NOT NULL UNIQUE, NAME VARCHAR(32) NOT NULL UNIQUE DEFAULT "New directory", PATH VARCHAR(256) DEFAULT NULL, IS_RECURSIVE INTEGER)'
         ]
 
         for query in queries:
@@ -139,11 +143,15 @@ class Setup():
         Log.do(LogLevel.ALL, f'Inserting default profiles and groups...', delay=0.1)
 
         new_groups = Tools.get_uid(32)
+        new_groups_kid = Tools.get_uid(32)
         new_profile = Tools.get_uid(32)
+        new_profile_kid = Tools.get_uid(32)
 
         queries = [
-            f'INSERT INTO groups (UID, NAME, MANAGE_GROUPS, MANAGE_PROFILES, AGE_LIMIT, PRIORITY) VALUES ("{new_groups}", "Owner", 1, 1, "AGE_0", 10)',
-            f'INSERT INTO profiles (UID, GROUP_UID, NAME, PIN) VALUES ("{new_profile}", "{new_groups}", "Heather", "0000")'
+            f'INSERT INTO groups (UID, NAME, MANAGE_GROUPS, MANAGE_PROFILES, IS_KID_FRIENDLY, PRIORITY) VALUES ("{new_groups}", "Owner", 1, 1, 0, 10)',
+            f'INSERT INTO groups (UID, NAME, MANAGE_GROUPS, MANAGE_PROFILES, IS_KID_FRIENDLY, PRIORITY) VALUES ("{new_groups_kid}", "Kid", 0, 0, 1, 1)',
+            f'INSERT INTO profiles (UID, GROUP_UID, NAME, PIN) VALUES ("{new_profile}", "{new_groups}", "Heather", "0000")',
+            f'INSERT INTO profiles (UID, GROUP_UID, NAME, PIN) VALUES ("{new_profile_kid}", "{new_groups_kid}", "Kids", "0000")'
         ]
 
         for query in queries:
@@ -197,6 +205,14 @@ class Setup():
 
                 Log.do(LogLevel.WARN, f'Can\'t download {avatar}!', delay=0.05)
 
+        _s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        _s.connect(('8.8.8.8', 80))
+
+        privateAddress = _s.getsockname()[0]
+        publicAddress = requests.get('https://api.ipify.org/?format=json').json()['ip']
+
+        _s.close()
+
         config = {
 	        "general": {
                 "parent_path": setupParentPath,
@@ -213,6 +229,16 @@ class Setup():
                 },
                 "plugins": {
                     "enable": True
+                },
+                "availability": {
+                    "public": {
+                        "enable": False,
+                        "endpoint": publicAddress
+                    },
+                    "private": {
+                        "enable": True,
+                        "endpoint": privateAddress
+                    }
                 }
             }
         }

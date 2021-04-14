@@ -118,3 +118,33 @@ class FileExtensions():
                 return FileType.AUDIO
 
         return None
+
+
+class StatusCode():
+
+    OK = 200
+    BAD_REQUEST = 400
+    FORBIDDEN = 403
+    NOT_FOUND = 404
+    LOCAL_ERROR = 424
+    INTERNAL_SERVER_ERROR = 500
+
+
+class StatusLiteral():
+
+    OK = 'OK'
+    BAD_REQUEST = 'BAD REQUEST'
+    FORBIDDEN = 'FORBIDDEN'
+    NOT_FOUND = 'NOT FOUND'
+    LOCAL_ERROR = 'LOCAL SERVER ERROR'
+    INTERNAL_SERVER_ERROR = 'INTERNAL SERVER ERROR'
+
+
+class StatusDetails():
+
+    OK = 'Request processed successfully.'
+    BAD_REQUEST = 'An error occured while processing your request.'
+    FORBIDDEN = 'Access to this ressource forbidden.'
+    NOT_FOUND = 'Ressource not found.'
+    LOCAL_ERROR = 'An internal error occured while processing your request.'
+    INTERNAL_SERVER_ERROR = 'An internal server error occured.'
