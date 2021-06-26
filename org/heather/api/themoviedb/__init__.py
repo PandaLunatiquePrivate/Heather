@@ -433,14 +433,18 @@ class TheMovieDatabase:
             raise InvalidID("Invalid id: The pre-requisite id is invalid or not found.")
 
     @staticmethod
-    def get_first_image(response, language="fr"):
+    def get_first_image(response, language="en"):
 
         url = ""
 
-        for pictures in response["posters"]:
+        for pictures in response["backdrops"]:
             if pictures["iso_639_1"] == language:
                 url = pictures["file_path"]
                 break
+
+        if url == "":
+            TheMovieDatabase.get_first_image(response, language="en")
+            return
 
         filename = url.replace("/", "")
         response = TheMovieDatabase.image_request(url)
@@ -448,7 +452,7 @@ class TheMovieDatabase:
         with open(filename, 'wb') as f:
             f.write(response.content)
 
-        print('Image successfully Downloaded: ', filename)
+        print('Image successfully downloaded as : ', filename)
 
     @staticmethod
     def get_first_poster(response, language="en"):
@@ -460,13 +464,17 @@ class TheMovieDatabase:
                 url = pictures["file_path"]
                 break
 
+        if url == "":
+            TheMovieDatabase.get_first_poster(response, language="en")
+            return
+
         filename = url.replace("/", "")
         response = TheMovieDatabase.image_request(url)
 
         with open(filename, 'wb') as f:
             f.write(response.content)
 
-        print('Image successfully Downloaded: ', filename)
+        print('Poster successfully downloaded as : ', filename)
 
     @staticmethod
     def get_person_details(person_id):
@@ -676,9 +684,12 @@ TheMovieDatabase.configure('eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOTAzYzhiZTE4ZDE5YjF
 # returned = TheMovieDatabase.get_images(1726)
 # TheMovieDatabase.get_first_poster(returned)
 # TheMovieDatabase.get_first_image(returned)
-# print(TheMovieDatabase.get_first_image(1726))
+
+
 # returned = TheMovieDatabase.get_tv_images(87108)
-# TheMovieDatabase.get_first_image(returned)
+# TheMovieDatabase.get_first_poster(returned, language="fr")
+# TheMovieDatabase.get_first_image(returned, language="fr")
+
 
 # Todo : Add additional parameters
 # Todo : Split class between TheMovieDatabaseMovies and TheMovieDatabaseTV ?
